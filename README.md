@@ -42,6 +42,13 @@ source .venv/bin/activate  # Unix/macOS
 ```
 
 3. 安装依赖：
+
+在安装 Python 依赖前，请先安装以下系统依赖：
+
+Windows: 无需额外安装
+macOS: `brew install portaudio`
+Ubuntu/Debian: `sudo apt-get install portaudio19-dev python3-pyaudio`
+
 ```bash
 pip install -r requirements.txt
 ```
