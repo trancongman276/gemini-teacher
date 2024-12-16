@@ -15,7 +15,7 @@ Make by [Box](https://x.com/boxmrchen)
 
 ## 系统要求
 
-- Python 3.8+ (Python 3.11+ 推荐)
+- Python 3.11+ (必须)
 - 麦克风设备
 - 网络连接
 
@@ -30,7 +30,7 @@ Make by [Box](https://x.com/boxmrchen)
 1. 克隆仓库：
 ```bash
 git clone https://github.com/nishuzumi/gemini-teacher.git
-cd gemini_teacher
+cd gemini-teacher
 ```
 
 2. 创建并激活虚拟环境（推荐）：
@@ -56,8 +56,20 @@ pip install -r requirements.txt
 ## 使用方法
 
 1. 运行程序：
+
+先设定Key
 ```bash
+// Linux or Macos
 export GOOGLE_API_KEY=[your-api-key]
+// Windows
+
+// Windows - CMD
+set GOOGLE_API_KEY=[your-api-key]
+// Windows - Powershell
+$env:GOOGLE_API_KEY="[your-api-key]"
+```
+然后执行
+```bash
 python starter.py
 ```
 
