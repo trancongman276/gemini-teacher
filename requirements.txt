@@ -8,3 +8,5 @@ pygments==2.18.0
 rich==13.9.4
 six==1.17.0
 websockets==14.1
+elevenlabs==1.50.3
+python-dotenv==1.0.1

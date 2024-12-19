@@ -55,20 +55,18 @@ pip install -r requirements.txt
 
 ## 使用方法
 
-1. 运行程序：
+1. 设定环境
+新建一份 `.env` 文件，将`.env.example` 内容复制过去，然后修改。
 
-先设定Key
-```bash
-// Linux or Macos
-export GOOGLE_API_KEY=[your-api-key]
-// Windows
+`GOOGLE_API_KEY` 填写谷歌Gemini的API Key
+### 开启语音功能
+这个功能按需开启，`ELEVENLABS_API_KEY` 是语音功能的API KEY。
 
-// Windows - CMD
-set GOOGLE_API_KEY=[your-api-key]
-// Windows - Powershell
-$env:GOOGLE_API_KEY="[your-api-key]"
-```
-然后执行
+获取方式：
+- 打开网站 [https://elevenlabs.io/](https://try.elevenlabs.io/2oulemau2lxk)
+- 点击右上角的Try for free，进行注册，有免费的1000个额度
+- 到个人设置中，生成API Key填入即可
+
 ```bash
 python starter.py
 ```

@@ -20,22 +20,25 @@ import io
 import os
 import sys
 import pyaudio
+import threading
 from rich import color, console
 from websockets.asyncio.client import connect
 from websockets.asyncio.connection import Connection
 from rich.console import Console
 from rich.markdown import Markdown
+from elevenlabs.client import AsyncElevenLabs 
+from elevenlabs import ElevenLabs, play
+import dotenv
+
+dotenv.load_dotenv()
 
 if sys.version_info < (3, 11, 0):
-    import taskgroup, exceptiongroup
-
-    asyncio.TaskGroup = taskgroup.TaskGroup
-    asyncio.ExceptionGroup = exceptiongroup.ExceptionGroup
+    raise Exception("Python 3.11 为最低要求.")
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 SEND_SAMPLE_RATE = 16000
-RECEIVE_SAMPLE_RATE = 24000
+RECEIVE_SAMPLE_RATE = 16000
 CHUNK_SIZE = 512
 
 host = "generativelanguage.googleapis.com"
@@ -44,7 +47,19 @@ model = "gemini-2.0-flash-exp"
 api_key = os.environ["GOOGLE_API_KEY"]
 uri = f"wss://{host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key={api_key}"
 
+pya = pyaudio.PyAudio()
 
+voice_client = None
+voice_api_key = os.environ["ELEVENLABS_API_KEY"]
+voice_model = "eleven_flash_v2_5"
+voice_voice_id = "nPczCjzI2devNBz1zQrb"
+
+console = Console()
+if voice_api_key:
+    console.print("启动语音模式",style="green")
+    voice_client = ElevenLabs(api_key=voice_api_key)
+else: 
+    console.print("语音模式关闭，找不到 ELEVENLABS_API_KEY",style="red")
 class AudioLoop:
     def __init__(self):
         self.ws: Connection
@@ -105,8 +120,6 @@ class AudioLoop:
                         return 
 
     async def listen_audio(self):
-        pya = pyaudio.PyAudio()
-
         mic_info = pya.get_default_input_device_info()
         stream = pya.open(
             format=FORMAT,
@@ -124,6 +137,8 @@ class AudioLoop:
             data = await asyncio.to_thread(stream.read, CHUNK_SIZE)
             # 计算音量 - 使用简单的字节平均值
             # 每个采样是2字节（16位），所以每次取2个字节转换为整数
+            if self.running_step > 1:
+              continue
             audio_data = []
             for i in range(0, len(data), 2):
                 sample = int.from_bytes(data[i:i+2], byteorder='little', signed=True)
@@ -181,6 +196,18 @@ class AudioLoop:
                         console.print("\n🤖 =============================================",style="yellow")
                         console.print(Markdown(text))
                         current_response = []
+                        if voice_client:
+                            def play_audio():
+                                voice_stream = voice_client.text_to_speech.convert_as_stream(
+                                    voice_id=voice_voice_id,
+                                    text=text,
+                                    model_id=voice_model,
+                                    enable_logging=True
+                                )
+                                play(voice_stream)
+                            console.print("🙎 声音构建中........",style="yellow")
+                            await asyncio.to_thread(play_audio)
+                            console.print("🙎 播放完毕",style="green")
                         self.running_step = 0
 
     async def run(self):
