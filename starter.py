@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from websockets.legacy.client import WebSocketClientProtocol
+from websockets_proxy import Proxy, proxy_connect
 import asyncio
 import base64
 import json
@@ -62,7 +64,7 @@ else:
     console.print("语音模式关闭，找不到 ELEVENLABS_API_KEY",style="red")
 class AudioLoop:
     def __init__(self):
-        self.ws: Connection
+        self.ws: WebSocketClientProtocol
         self.audio_out_queue = asyncio.Queue()
         self.running_step = 0
 
@@ -76,8 +78,8 @@ class AudioLoop:
             }
         }
         await self.ws.send(json.dumps(setup_msg))
-        raw_response = await self.ws.recv(decode=False)
-        setup_response = json.loads(raw_response.decode("utf-8"))
+        raw_response = await self.ws.recv()
+        setup_response = json.loads(raw_response)
 
         # Send initial prompt after setup
         initial_msg = {
@@ -96,8 +98,7 @@ class AudioLoop:
         await self.ws.send(json.dumps(initial_msg))
         current_response = []
         async for raw_response in self.ws:
-            response = json.loads(raw_response.decode("utf-8"))  # 使用 UTF-8 解码
-
+            response = json.loads(raw_response)
             try:
                 if "serverContent" in response:
                     parts = (
@@ -126,7 +127,7 @@ class AudioLoop:
             channels=CHANNELS,
             rate=SEND_SAMPLE_RATE,
             input=True,
-            input_device_index=mic_info["index"],
+            input_device_index=mic_info["index"], # type: ignore
             frames_per_buffer=CHUNK_SIZE,
         )
         
@@ -171,7 +172,7 @@ class AudioLoop:
             if self.running_step == 1:
                 console.print("\n♻️ 处理中：",end="")
                 self.running_step += 1
-            response = json.loads(raw_response.decode("utf-8"))  
+            response = json.loads(raw_response)  
 
             try:
                 if "serverContent" in response:
@@ -198,7 +199,7 @@ class AudioLoop:
                         current_response = []
                         if voice_client:
                             def play_audio():
-                                voice_stream = voice_client.text_to_speech.convert_as_stream(
+                                voice_stream = voice_client.text_to_speech.convert_as_stream( # type: ignore
                                     voice_id=voice_voice_id,
                                     text=text,
                                     model_id=voice_model,
@@ -211,9 +212,11 @@ class AudioLoop:
                         self.running_step = 0
 
     async def run(self):
-        async with connect(
+        proxy = Proxy.from_url(os.environ["HTTP_PROXY"])  if os.environ["HTTP_PROXY"] else None
+        async with proxy_connect(
             uri,
-            additional_headers={"Content-Type": "application/json"}
+            proxy=proxy,
+            # additional_headers={"Content-Type": "application/json"},
         ) as ws:
             self.ws = ws
             console = Console()
