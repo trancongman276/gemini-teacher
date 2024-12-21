@@ -212,7 +212,7 @@ class AudioLoop:
                         self.running_step = 0
 
     async def run(self):
-        proxy = Proxy.from_url(os.environ["HTTP_PROXY"])  if os.environ["HTTP_PROXY"] else None
+        proxy = Proxy.from_url(os.environ["HTTP_PROXY"]) if os.environ.get("HTTP_PROXY") else None
         async with proxy_connect(
             uri,
             proxy=proxy,
