@@ -58,6 +58,8 @@ pip install -r requirements.txt
 1. 设定环境
 新建一份 `.env` 文件，将`.env.example` 内容复制过去，然后修改。
 
+如果你需要设定代理，请填写 `HTTP_PROXY`，例如 `HTTP_PROXY=http://127.0.0.1:7890`
+
 `GOOGLE_API_KEY` 填写谷歌Gemini的API Key
 ### 开启语音功能
 这个功能按需开启，`ELEVENLABS_API_KEY` 是语音功能的API KEY。
