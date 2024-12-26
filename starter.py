@@ -18,12 +18,10 @@ from websockets_proxy import Proxy, proxy_connect
 import asyncio
 import base64
 import json
-import io
 import os
 import sys
 import pyaudio
-import threading
-from rich import color, console
+from rich import console
 from websockets.asyncio.client import connect
 from websockets.asyncio.connection import Connection
 from rich.console import Console
@@ -218,7 +216,7 @@ class AudioLoop:
                                 )
                                 play(voice_stream)
 
-                            console.print("🙎 声音构建中........", style="yellow")
+                            console.print("🙎 声音播放中........", style="yellow")
                             await asyncio.to_thread(play_audio)
                             console.print("🙎 播放完毕", style="green")
                         self.running_step = 0
