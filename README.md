@@ -1,16 +1,16 @@
-# Gemini English Speaking Assistant
+# Gemini Vietnamese-English Speaking Assistant
 
-This is an English speaking practice assistant based on Google Gemini AI that can recognize your English pronunciation in real-time and provide instant feedback and correction suggestions.
+This is an English speaking practice assistant based on Google Gemini AI that can recognize English pronunciation in real-time and provide instant feedback and correction suggestions, specifically designed for Vietnamese speakers.
 
-Made by [Box](https://x.com/boxmrchen)
+Original made by [Box](https://x.com/boxmrchen)
 
 ## Features
 
 - 🎤 Real-time speech recognition
-- 🤖 AI-powered pronunciation assessment
-- 📝 Grammar correction
-- 🔄 Scenario-based conversation practice
-- 🎯 Targeted pronunciation guidance
+- 🤖 AI-powered pronunciation assessment with focus on Vietnamese accent patterns
+- 📝 Grammar correction tailored for common Vietnamese-English mistakes
+- 🔄 Scenario-based conversation practice with Vietnamese context
+- 🎯 Targeted pronunciation guidance for Vietnamese speakers
 - 💡 Intelligent scene switching
 
 ## System Requirements
@@ -75,6 +75,8 @@ python starter.py
 - 🎤 : Recording
 - ♻️ : Processing
 - 🤖 : AI Feedback
+
+Note: This assistant is specifically optimized for Vietnamese speakers learning English, with particular attention to common pronunciation challenges faced by Vietnamese learners.
 
 ## License
 
